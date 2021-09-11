@@ -1,8 +1,9 @@
 {
-  "name": "vite-plugin-html",
+  "name": "vite-plugin-htmls",
   "version": "0.1.0-0",
   "description": "Vite Plugin that simplifies creation of HTML files to serve your bundles",
   "main": "lib/index.js",
+  "keywords": ["vite", "vite-plugin", "roll-plugin", "html", "template"],
   "scripts": {
     "start": "tsc -w",
     "build": "rm -rf lib && tsc",
