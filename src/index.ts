@@ -1,7 +1,6 @@
-
 import { extname, resolve } from 'path';
 import { readFileSync } from 'fs';
-import type { Plugin, ResolvedConfig, HtmlTagDescriptor } from 'vite';
+import type { Plugin, ResolvedConfig, HtmlTagDescriptor, ViteDevServer } from 'vite';
 import type { OutputBundle, OutputAsset, OutputChunk } from 'rollup';
 import { isAbsoluteUrl, addTrailingSlash } from './utils';
 // import { assert } from 'console';
@@ -68,8 +67,6 @@ export default function htmlPlugin(userOptions?: HtmlPluginOptions): Plugin {
 
   return {
     name: 'vite-plugin-html',
-    apply: 'build',
-
     config(cfg) {
       // eslint-disable-next-line no-param-reassign
       cfg.build = {
@@ -83,6 +80,7 @@ export default function htmlPlugin(userOptions?: HtmlPluginOptions): Plugin {
           input: userOptions.input,
         },
       };
+      return cfg;
     },
 
     configResolved(resolvedConfig) {
@@ -107,6 +105,18 @@ export default function htmlPlugin(userOptions?: HtmlPluginOptions): Plugin {
         fileName: 'index.html',
       });
     },
+
+    transformIndexHtml (html) {
+      const entryTag: HtmlTagDescriptor = {
+        tag: 'script',
+        attrs: {
+          type: 'module',
+          src: userOptions.input,
+        },
+        injectTo: 'body',
+      };
+      return [ entryTag ]
+    }
   };
 }
 
