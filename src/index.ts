@@ -73,6 +73,7 @@ export default function htmlPlugin(userOptions?: HtmlPluginOptions): Plugin {
         ...cfg.build,
         rollupOptions: {
           ...cfg?.build?.rollupOptions,
+          preserveEntrySignatures: 'exports-only',
           output: {
             ...cfg?.build?.rollupOptions?.output,
             format: 'es',

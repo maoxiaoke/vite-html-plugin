@@ -42,6 +42,7 @@ function htmlPlugin(userOptions) {
       var _a, _b, _c;
       cfg.build = __spreadProps(__spreadValues({}, cfg.build), {
         rollupOptions: __spreadProps(__spreadValues({}, (_a = cfg == null ? void 0 : cfg.build) == null ? void 0 : _a.rollupOptions), {
+          preserveEntrySignatures: "exports-only",
           output: __spreadProps(__spreadValues({}, (_c = (_b = cfg == null ? void 0 : cfg.build) == null ? void 0 : _b.rollupOptions) == null ? void 0 : _c.output), {
             format: "es"
           }),
