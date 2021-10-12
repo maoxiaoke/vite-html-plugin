@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0
+## 0.1.1
 
 - [feat] change package's name from `vite-plugin-htmls` to `vite-plugin-index-html`.
 
