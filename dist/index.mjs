@@ -20,7 +20,7 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 
 // src/index.ts
 import { extname, resolve } from "path";
-import { readFileSync } from "fs";
+import { readFileSync, pathExists } from "fs-extra";
 
 // src/utils.ts
 var isAbsoluteUrl = (url) => {
@@ -34,7 +34,11 @@ var addTrailingSlash = (str) => {
 function htmlPlugin(userOptions) {
   let viteConfig = null;
   if (!userOptions.template && !userOptions.templateContent) {
-    return;
+    if (pathExists(resolve("index.html"))) {
+      userOptions.template = "index.html";
+    } else {
+      return;
+    }
   }
   return {
     name: "vite-plugin-html",
@@ -42,6 +46,7 @@ function htmlPlugin(userOptions) {
       var _a, _b, _c;
       cfg.build = __spreadProps(__spreadValues({}, cfg.build), {
         rollupOptions: __spreadProps(__spreadValues({}, (_a = cfg == null ? void 0 : cfg.build) == null ? void 0 : _a.rollupOptions), {
+          preserveEntrySignatures: "exports-only",
           output: __spreadProps(__spreadValues({}, (_c = (_b = cfg == null ? void 0 : cfg.build) == null ? void 0 : _b.rollupOptions) == null ? void 0 : _c.output), {
             format: "es"
           }),

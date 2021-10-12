@@ -1,5 +1,5 @@
 import { extname, resolve } from 'path';
-import { readFileSync } from 'fs';
+import { readFileSync, pathExists } from 'fs-extra';
 import type { Plugin, ResolvedConfig, HtmlTagDescriptor, ViteDevServer } from 'vite';
 import type { OutputBundle, OutputAsset, OutputChunk } from 'rollup';
 import { isAbsoluteUrl, addTrailingSlash } from './utils';
@@ -62,7 +62,13 @@ export default function htmlPlugin(userOptions?: HtmlPluginOptions): Plugin {
   let viteConfig: ResolvedConfig = null;
 
   if (!userOptions.template && !userOptions.templateContent) {
-    return;
+
+    if (pathExists(resolve('index.html'))) {
+      userOptions.template = 'index.html'
+    } else {
+      return;
+    }
+
   }
 
   return {

@@ -1,4 +1,4 @@
-var __defProp = Object.defineProperty;
+"use strict";Object.defineProperty(exports, "__esModule", {value: true});var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
 var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;
@@ -19,8 +19,8 @@ var __spreadValues = (a, b) => {
 var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 
 // src/index.ts
-import { extname, resolve } from "path";
-import { readFileSync } from "fs";
+var _path = require('path');
+var _fsextra = require('fs-extra');
 
 // src/utils.ts
 var isAbsoluteUrl = (url) => {
@@ -34,7 +34,11 @@ var addTrailingSlash = (str) => {
 function htmlPlugin(userOptions) {
   let viteConfig = null;
   if (!userOptions.template && !userOptions.templateContent) {
-    return;
+    if (_fsextra.pathExists.call(void 0, _path.resolve.call(void 0, "index.html"))) {
+      userOptions.template = "index.html";
+    } else {
+      return;
+    }
   }
   return {
     name: "vite-plugin-html",
@@ -79,7 +83,7 @@ function htmlPlugin(userOptions) {
 }
 function parseTemplate(template, templateContent) {
   if (template) {
-    return readFileSync(resolve(template), "utf-8");
+    return _fsextra.readFileSync.call(void 0, _path.resolve.call(void 0, template), "utf-8");
   }
   if (templateContent) {
     return templateContent;
@@ -113,7 +117,7 @@ function classifyFiles(files, config) {
 }
 function getFiles(bundle) {
   return Object.values(bundle).map((file) => __spreadProps(__spreadValues({}, file), {
-    ext: extname(file.fileName)
+    ext: _path.extname.call(void 0, file.fileName)
   }));
 }
 function toPublicPath(filename, config) {
@@ -164,6 +168,6 @@ function serializeAttrs(attrs) {
   }
   return res;
 }
-export {
-  htmlPlugin as default
-};
+
+
+exports.default = htmlPlugin;

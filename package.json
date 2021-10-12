@@ -1,12 +1,9 @@
 {
-  "name": "vite-plugin-htmls",
+  "name": "vite-plugin-index-html",
   "version": "0.1.1",
   "description": "Vite Plugin that simplifies creation of HTML files to serve your bundles",
-  "main": "dist/index.mjs",
-  "type": "module",
-  "exports": {
-    ".": "./dist/index.mjs"
-  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "keywords": [
     "vite",
     "vite-plugin",
@@ -15,8 +12,8 @@
     "template"
   ],
   "scripts": {
-    "start": "tsup src/index.ts --format esm --dts --watch",
-    "build": "rm -rf lib && tsup src/index.ts --format esm --dts",
+    "start": "npm run build -- --watch",
+    "build": "tsup src/index.ts --format esm,cjs --dts",
     "test": "jest",
     "coverage": "codecov"
   },
@@ -24,11 +21,12 @@
   "license": "MIT",
   "devDependencies": {
     "@iceworks/spec": "^1.4.1",
+    "@types/fs-extra": "^9.0.13",
     "eslint": "^7.32.0",
     "jest": "^27.1.1",
     "rollup": "^2.56.3",
     "ts-jest": "^27.0.5",
-    "tsup": "^5.3.0",
+    "tsup": "^4",
     "typescript": "^4.4.3",
     "vite": "^2.5.6"
   },
@@ -37,5 +35,7 @@
     "collectCoverage": true,
     "preset": "ts-jest"
   },
-  "dependencies": {}
+  "dependencies": {
+    "fs-extra": "^10.0.0"
+  }
 }
