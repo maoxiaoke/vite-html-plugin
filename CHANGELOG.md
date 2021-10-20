@@ -1,4 +1,7 @@
 # Changelog
+## 0.1.2
+
+- [feat] remove entry script in index.html automatically.
 
 ## 0.1.1
 

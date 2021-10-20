@@ -1,9 +1,10 @@
 import { extname, resolve } from 'path';
 import { readFileSync, pathExists } from 'fs-extra';
-import type { Plugin, ResolvedConfig, HtmlTagDescriptor, ViteDevServer } from 'vite';
+import type { Plugin, ResolvedConfig, HtmlTagDescriptor } from 'vite';
 import type { OutputBundle, OutputAsset, OutputChunk } from 'rollup';
 import { isAbsoluteUrl, addTrailingSlash } from './utils';
-// import { assert } from 'console';
+
+const scriptLooseRegex = /<script\s[^>]*src=['"]?([^'"]*)['"]?[^>]*>*<\/script>/;
 
 export interface HtmlPluginOptions {
   /**
@@ -62,13 +63,11 @@ export default function htmlPlugin(userOptions?: HtmlPluginOptions): Plugin {
   let viteConfig: ResolvedConfig = null;
 
   if (!userOptions.template && !userOptions.templateContent) {
-
     if (pathExists(resolve('index.html'))) {
-      userOptions.template = 'index.html'
+      userOptions.template = 'index.html';
     } else {
       return;
     }
-
   }
 
   return {
@@ -101,7 +100,10 @@ export default function htmlPlugin(userOptions?: HtmlPluginOptions): Plugin {
       );
 
       const html = injectToHtml(
-        parseTemplate(userOptions.template, userOptions.templateContent),
+        removeHtmlEntryScript(
+          parseTemplate(userOptions.template, userOptions.templateContent),
+          userOptions.input,
+        ),
         htmlTags,
       );
 
@@ -113,7 +115,7 @@ export default function htmlPlugin(userOptions?: HtmlPluginOptions): Plugin {
       });
     },
 
-    transformIndexHtml (html) {
+    transformIndexHtml(html) {
       const entryTag: HtmlTagDescriptor = {
         tag: 'script',
         attrs: {
@@ -122,10 +124,36 @@ export default function htmlPlugin(userOptions?: HtmlPluginOptions): Plugin {
         },
         injectTo: 'body',
       };
-      return [ entryTag ]
-    }
+      return injectToHtml(
+        removeHtmlEntryScript(html, userOptions.input),
+        [entryTag],
+      );
+    },
   };
 }
+
+const removeHtmlEntryScript = (html: string, entry: string) => {
+  let _html = html;
+  const matchs = html.match(new RegExp(scriptLooseRegex, 'g'));
+
+  const commentScript = (script: string) => `<!-- removed by vite-plugin-index-html ${script} -->`;
+
+  if (matchs) {
+    matchs.forEach((matchStr) => {
+      const [, src] = matchStr.match(scriptLooseRegex);
+
+      if (entry.includes(src)) {
+        _html = _html.replace(matchStr, commentScript(matchStr));
+        console.warn(`
+          vite-plugin-index-html: ${matchStr} is removed, for the reason that entry file were configured.
+          And you can remove it from index.html.
+        `);
+      }
+    });
+    return _html;
+  }
+};
+
 
 function parseTemplate(template?: string, templateContent?: string | false): string {
   if (template) {
