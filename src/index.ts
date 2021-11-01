@@ -150,8 +150,9 @@ const removeHtmlEntryScript = (html: string, entry: string) => {
         `);
       }
     });
-    return _html;
   }
+
+  return _html;
 };
 
 

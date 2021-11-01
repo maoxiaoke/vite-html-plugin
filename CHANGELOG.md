@@ -1,4 +1,8 @@
 # Changelog
+## 0.1。3
+
+- [feat] return original html when non-matches.
+
 ## 0.1.2
 
 - [feat] remove entry script in index.html automatically.
